@@ -1,7 +1,7 @@
-use std::{cell::LazyCell, fmt::format};
+use std::cell::LazyCell;
 
 //pub type Num=fixed::types::I32F32;
-use crate::{num::*, utils::loop_wrap_angle::{self, loop_wrap_angle}};
+use crate::{num::*, utils::loop_wrap_angle::loop_wrap_angle};
 use cordic::{atan, atan2, sqrt};
 
 
