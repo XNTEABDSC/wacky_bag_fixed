@@ -5,6 +5,7 @@ use crate::{num::*, utils::loop_wrap_angle::loop_wrap_angle};
 use cordic::{atan, atan2, sqrt};
 
 
+
 /// Computes the overlap area between a circle centered at (0,0) and a triangle
 /// with vertices (0,0), (d, y1), and (d, y2).
 /// - `r`: Radius of the circle.
@@ -14,7 +15,7 @@ use cordic::{atan, atan2, sqrt};
 /// - `y1`, `y2`: Y-coordinates defining the triangle's vertical segment at x = d.
 /// Returns the signed overlap area; negative if y1 < y2 and the orientation is reversed.
 #[inline]
-pub fn area_circle_triangle<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCell<Num,impl FnOnce() -> Num>,y2:Num,y2_angle:&'a LazyCell<Num,impl FnOnce() -> Num>)->Num{
+pub fn area_circle_triangle_2d<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCell<Num,impl FnOnce() -> Num>,y2:Num,y2_angle:&'a LazyCell<Num,impl FnOnce() -> Num>)->Num{
     /*
     {
         let y1a=**y1_angle;
@@ -33,7 +34,7 @@ pub fn area_circle_triangle<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCel
     }
 
     if d.is_negative(){
-        return area_circle_triangle_inner(r,r_sq,d.wrapping_neg(),
+        return area_circle_triangle_2d_inner(r,r_sq,d.wrapping_neg(),
         y1.wrapping_neg(),
         &LazyCell::new( ||{
             loop_wrap_angle((**y1_angle) -Num::PI)
@@ -43,7 +44,7 @@ pub fn area_circle_triangle<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCel
             loop_wrap_angle((**y2_angle) -Num::PI)
         } ));
     }
-    return area_circle_triangle_inner(r,r_sq,d,y1,y1_angle,y2,y2_angle);
+    return area_circle_triangle_2d_inner(r,r_sq,d,y1,y1_angle,y2,y2_angle);
 }
 
 /// Computes the overlap area between a circle centered at (0,0) and a triangle
@@ -54,7 +55,7 @@ pub fn area_circle_triangle<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCel
 /// - `d`: X-coordinate of the vertical leg of the triangle.
 /// - `y1`, `y2`: Y-coordinates defining the triangle's vertical segment at x = d.
 /// Returns the signed overlap area; negative if y1 < y2 and the orientation is reversed.
-fn area_circle_triangle_inner<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCell<Num,impl FnOnce() -> Num>,y2:Num,y2_angle:&'a LazyCell<Num,impl FnOnce() -> Num>)->Num{
+fn area_circle_triangle_2d_inner<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyCell<Num,impl FnOnce() -> Num>,y2:Num,y2_angle:&'a LazyCell<Num,impl FnOnce() -> Num>)->Num{
 
     /*
     {
@@ -146,12 +147,12 @@ fn area_circle_triangle_inner<'a>(r:Num,r_sq:Num,d:Num,y1:Num,y1_angle:&'a LazyC
 }
 
 #[test]
-fn test_area_circle_triangle() {
+fn test_area_circle_triangle_2d() {
     fn test_area_circle_triangle_fn(r:Num,r_sq:Num,d:Num,y1:Num,y2:Num)
     {
         let y1_angle=LazyCell::new(||atan2(y1, d));
         let y2_angle=LazyCell::new(||atan2(y2, d));
-        let a=area_circle_triangle(r, r_sq, d, y1, &y1_angle, y2, &y2_angle);
+        let a=area_circle_triangle_2d(r, r_sq, d, y1, &y1_angle, y2, &y2_angle);
         let b=area_circle_triangle_old(r, r_sq, d, y1, y2);
         assert_eq!(a,b,"test {r}, {r_sq}, {d}, {y1}, {y2}")
     }
@@ -183,7 +184,7 @@ fn test_area_circle_triangle() {
 ///
 /// # Returns
 /// Total overlapping area between the circle and the rectangle.
-pub fn area_circle_rectangle(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
+pub fn area_circle_rectangle_2d(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
     let atan_1=LazyCell::new(||{atan2(y1,x1)});
     let atan_2=LazyCell::new(||{atan2(y1,x2)});
     let atan_3=LazyCell::new(||{atan2(y2,x2)});
@@ -206,20 +207,20 @@ pub fn area_circle_rectangle(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
     
 
     let area1=
-    area_circle_triangle(r, r_sq, y1, x1.wrapping_neg(),&atan_1_rr90, x2.wrapping_neg(),&atan_2_rr90);
+    area_circle_triangle_2d(r, r_sq, y1, x1.wrapping_neg(),&atan_1_rr90, x2.wrapping_neg(),&atan_2_rr90);
     //let adwawd1=area1.to_string();
 
     let area2=
-    area_circle_triangle(r, r_sq, x2, y1,&atan_2, y2,&atan_3);
+    area_circle_triangle_2d(r, r_sq, x2, y1,&atan_2, y2,&atan_3);
     //let adwawd2=area2.to_string();
 
     let area3=
-    area_circle_triangle(r, r_sq, y2, x2.wrapping_neg(),&atan_3_rr90, x1.wrapping_neg(),&atan_4_rr90);
+    area_circle_triangle_2d(r, r_sq, y2, x2.wrapping_neg(),&atan_3_rr90, x1.wrapping_neg(),&atan_4_rr90);
     //let adwawd3=area3.to_string();
 
     let area4=
     //area_circle_triangle_old(r, r_sq, x1.wrapping_neg(), y2.wrapping_neg(), y1.wrapping_neg());
-    area_circle_triangle(r, r_sq, x1, y2,&atan_4, y1,&atan_1);
+    area_circle_triangle_2d(r, r_sq, x1, y2,&atan_4, y1,&atan_1);
     //let adwawd4=area4.to_string();
 
     /*
@@ -232,13 +233,13 @@ pub fn area_circle_rectangle(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
 }
 
 #[test]
-fn test_area_circle_rectangle() {
+fn test_area_circle_rectangle_2d() {
     let r = Num::ONE * 2; // r = 2
     let r_sq = r * r;
 
     // Case 1: Rectangle fully inside circle
     assert_eq!(
-        area_circle_rectangle(r, r_sq, Num::ZERO, Num::ZERO, Num::ONE, Num::ONE),
+        area_circle_rectangle_2d(r, r_sq, Num::ZERO, Num::ZERO, Num::ONE, Num::ONE),
         Num::ONE,
         "Rectangle [0,0] to [1,1], r=2, expected area 1"
     );
@@ -247,7 +248,7 @@ fn test_area_circle_rectangle() {
     let r_small = Num::ONE; // r = 1
     let r_sq_small = r_small * r_small;
     assert_eq!(
-        area_circle_rectangle(
+        area_circle_rectangle_2d(
             r_small,
             r_sq_small,
             Num::ONE * 2,
@@ -261,7 +262,7 @@ fn test_area_circle_rectangle() {
 
     // Case 3: Rectangle over origin, fully inside circle
     assert_eq!(
-        area_circle_rectangle(
+        area_circle_rectangle_2d(
             r,
             r_sq,
             Num::ONE.wrapping_neg(),
@@ -277,7 +278,7 @@ fn test_area_circle_rectangle() {
     let r_small = Num::ONE; // r = 1
     let r_sq_small = r_small * r_small;
     assert_eq!(
-        area_circle_rectangle(
+        area_circle_rectangle_2d(
             r_small,
             r_sq_small,
             Num::ONE * -2,
@@ -290,7 +291,7 @@ fn test_area_circle_rectangle() {
     );
 
     // Case 5: Partial overlap
-    let partial_area = area_circle_rectangle(r, r_sq, Num::ONE, Num::ONE, Num::ONE * 2, Num::ONE * 2);
+    let partial_area = area_circle_rectangle_2d(r, r_sq, Num::ONE, Num::ONE, Num::ONE * 2, Num::ONE * 2);
     assert!(
         partial_area > Num::ZERO,
         "Rectangle [1,1] to [2,2], r=2, expected area > 0"
@@ -298,13 +299,13 @@ fn test_area_circle_rectangle() {
 
     // Case 6: Rectangle touching circle boundary
     assert_eq!(
-        area_circle_rectangle(r, r_sq, Num::ONE * 2, Num::ZERO, Num::ONE * 3, Num::ONE),
+        area_circle_rectangle_2d(r, r_sq, Num::ONE * 2, Num::ZERO, Num::ONE * 3, Num::ONE),
         Num::ZERO,
         "Rectangle [2,0] to [3,1], r=2, expected area 0"
     );
 
     // Case 7: Rectangle intersecting circle in one quadrant
-    let overlap_area = area_circle_rectangle(r, r_sq, Num::ONE, Num::ONE, Num::ONE * 3, Num::ONE * 3);
+    let overlap_area = area_circle_rectangle_2d(r, r_sq, Num::ONE, Num::ONE, Num::ONE * 3, Num::ONE * 3);
     assert!(
         overlap_area > Num::ZERO && overlap_area < Num::ONE * 4,
         "Rectangle [1,1] to [3,3], r=2, expected area between 0 and 4"
@@ -314,7 +315,7 @@ fn test_area_circle_rectangle() {
     let r_small = Num::ONE*5; // r = 1
     let r_sq_small = r_small * r_small;
     assert_eq!(
-        area_circle_rectangle(
+        area_circle_rectangle_2d(
             r_small,
             r_sq_small,
             Num::ONE * 4,
@@ -329,7 +330,7 @@ fn test_area_circle_rectangle() {
     let r_small = Num::ONE*5; // r = 1
     let r_sq_small = r_small * r_small;
     assert_eq!(
-        area_circle_rectangle(
+        area_circle_rectangle_2d(
             r_small,
             r_sq_small,
             Num::ONE * -4,
@@ -350,7 +351,7 @@ fn test_area_circle_rectangle() {
 /// - `d`: X-coordinate of the vertical leg of the triangle.
 /// - `y1`, `y2`: Y-coordinates defining the triangle's vertical segment at x = d.
 /// Returns the signed overlap area; negative if y1 < y2 and the orientation is reversed.
-pub fn area_circle_triangle_old(r:Num,r_sq:Num,mut d:Num,mut y1:Num,mut y2:Num)->Num{
+fn area_circle_triangle_old(r:Num,r_sq:Num,mut d:Num,mut y1:Num,mut y2:Num)->Num{
     
     if d.is_zero(){
         return Num::ZERO;
@@ -479,7 +480,7 @@ fn test_area_circle_triangle_old(){
     return area
  */
 
-pub fn area_circle_rectangle_old(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
+fn area_circle_rectangle_old(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
     let area1=area_circle_triangle_old(r, r_sq, y1.wrapping_neg(), x1, x2);
     let area2=area_circle_triangle_old(r, r_sq, x2, y1, y2);
     let area3=area_circle_triangle_old(r, r_sq, y2, x2.wrapping_neg(), x1.wrapping_neg());

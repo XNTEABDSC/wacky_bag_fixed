@@ -1,10 +1,18 @@
 
 
-use crate::utils::area_circle_polygon_overlap::area_circle_rectangle;
+use crate::utils::area_circle_polygon_overlap::area_circle_rectangle_2d;
 use crate::num::*;
-use crate::vec2_fix::*;
+use crate::vec_fix::*;
 
-pub fn area_circle_grid_overlap<TFn>(pos:Vec2Fix,radius:Num,mut on_result:TFn)
+/*
+pub fn circle_grid_overlap<const DIM:usize,TFn>(pos:VecFix<DIM>,radius:Num,mut on_result:TFn)
+    where TFn:FnMut((isize,isize),Num)
+
+{
+
+} */
+
+pub fn area_circle_grid_overlap_2<TFn>(pos:VecFix2,radius:Num,mut on_result:TFn)
     where TFn:FnMut((i32,i32),Num)
 {
     let (x,y)=(pos[0],pos[1]);
@@ -58,14 +66,14 @@ pub fn area_circle_grid_overlap<TFn>(pos:Vec2Fix,radius:Num,mut on_result:TFn)
 
         for ix in x_edge_1_int..x_edge_2_int {
             let ixf=Num::from_num(ix)-x;
-            on_result((ix,iy),area_circle_rectangle(radius, radius_sq, ixf, iyf_y, ixf+Num::ONE, iyf_2_y));
+            on_result((ix,iy),area_circle_rectangle_2d(radius, radius_sq, ixf, iyf_y, ixf+Num::ONE, iyf_2_y));
         }
         for ix in x_edge_2_int..x_edge_3_int {
             on_result((ix,iy),Num::ONE);
         }
         for ix in x_edge_3_int..x_edge_4_int {
             let ixf=Num::from_num(ix)-x;
-            on_result((ix,iy),area_circle_rectangle(radius, radius_sq, ixf, iyf_y, ixf+Num::ONE, iyf_2_y));
+            on_result((ix,iy),area_circle_rectangle_2d(radius, radius_sq, ixf, iyf_y, ixf+Num::ONE, iyf_2_y));
         }
         
         cur_i_data=cur_i2_data;
@@ -76,7 +84,7 @@ pub fn area_circle_grid_overlap<TFn>(pos:Vec2Fix,radius:Num,mut on_result:TFn)
 mod test{
     use std::collections::HashMap;
     use super::*;
-    fn area_circle_grid_overlap_test<TFn>(pos:Vec2Fix,radius:Num,mut on_result:TFn)
+    fn area_circle_grid_overlap_test<TFn>(pos:VecFix2,radius:Num,mut on_result:TFn)
         where TFn:FnMut((i32,i32),Num)
     {
         let r = radius;
@@ -107,7 +115,7 @@ mod test{
                 let y2 = Num::from(j + 1) - pos[1];
 
                 // Calculate the overlapping area
-                let area = area_circle_rectangle(r, r_sq, x1, y1, x2, y2);
+                let area = area_circle_rectangle_2d(r, r_sq, x1, y1, x2, y2);
 
                 if area > Num::from(0) {
                     on_result((i, j), area);
@@ -120,21 +128,21 @@ mod test{
 
         let test_cases = [
                 // Circle centered at (0.0, 0.0) with radius 1.0
-                (Vec2Fix::new(Num::from_num(0), Num::from_num(0)), Num::from_num(1.0)),
+                (VecFix2::new([Num::from_num(0), Num::from_num(0)]), Num::from_num(1.0)),
                 // Circle at (0.5, 0.5) with small radius
-                (Vec2Fix::new(Num::from_num(0.5), Num::from_num(0.5)), Num::from_num(0.4)),
+                (VecFix2::new([Num::from_num(0.5), Num::from_num(0.5)]), Num::from_num(0.4)),
                 // Circle in negative coordinates
-                (Vec2Fix::new(Num::from_num(-1.2), Num::from_num(0.8)), Num::from_num(0.6)),
+                (VecFix2::new([Num::from_num(-1.2), Num::from_num(0.8)]), Num::from_num(0.6)),
                 // Circle in negative coordinates
-                (Vec2Fix::new(Num::from_num(-10), Num::from_num(10)), Num::from_num(5)),
+                (VecFix2::new([Num::from_num(-10), Num::from_num(10)]), Num::from_num(5)),
                 // Circle in negative coordinates
-                (Vec2Fix::new(Num::from_num(-10), Num::from_num(10)), Num::from_num(20)),
+                (VecFix2::new([Num::from_num(-10), Num::from_num(10)]), Num::from_num(20)),
             ];
 
-        fn test_inner(pos:Vec2Fix,radius:Num){
+        fn test_inner(pos:VecFix2,radius:Num){
             
             let mut hma=HashMap::<(i32,i32),Num>::new();
-            area_circle_grid_overlap(pos,radius,|p,a|{
+            area_circle_grid_overlap_2(pos,radius,|p,a|{
                 hma.insert(p, a);
             });
             area_circle_grid_overlap_test(pos,radius,|p,a|{
