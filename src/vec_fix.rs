@@ -4,7 +4,8 @@ use cordic::*;
 use crate::num::Num;
 //pub struct Vec2F(pub Num,pub Num);
 
-pub type VecFix<const DIM:usize>=wacky_bag::structures::mvec::MVec<Num,DIM>;
+
+pub type VecFix<const DIM:usize>=wacky_bag::structures::cvec::CVec<Num,DIM>;
 
 pub type VecFix2=VecFix<2>;
 #[inline]
