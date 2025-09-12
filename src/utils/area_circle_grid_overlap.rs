@@ -128,15 +128,15 @@ mod test{
 
         let test_cases = [
                 // Circle centered at (0.0, 0.0) with radius 1.0
-                (VecFix2::new([Num::from_num(0), Num::from_num(0)]), Num::from_num(1.0)),
+                (VecFix2::new(Num::from_num(0), Num::from_num(0)), Num::from_num(1.0)),
                 // Circle at (0.5, 0.5) with small radius
-                (VecFix2::new([Num::from_num(0.5), Num::from_num(0.5)]), Num::from_num(0.4)),
+                (VecFix2::new(Num::from_num(0.5), Num::from_num(0.5)), Num::from_num(0.4)),
                 // Circle in negative coordinates
-                (VecFix2::new([Num::from_num(-1.2), Num::from_num(0.8)]), Num::from_num(0.6)),
+                (VecFix2::new(Num::from_num(-1.2), Num::from_num(0.8)), Num::from_num(0.6)),
                 // Circle in negative coordinates
-                (VecFix2::new([Num::from_num(-10), Num::from_num(10)]), Num::from_num(5)),
+                (VecFix2::new(Num::from_num(-10), Num::from_num(10)), Num::from_num(5)),
                 // Circle in negative coordinates
-                (VecFix2::new([Num::from_num(-10), Num::from_num(10)]), Num::from_num(20)),
+                (VecFix2::new(Num::from_num(-10), Num::from_num(10)), Num::from_num(20)),
             ];
 
         fn test_inner(pos:VecFix2,radius:Num){

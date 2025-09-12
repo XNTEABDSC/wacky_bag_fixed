@@ -5,8 +5,11 @@ edition = "2024"
 
 [dependencies]
 
-fixed = "1.28.0"
 cordic = "0.1.5"
 wacky_bag = {path="../wacky_bag"}
 rand = "0.8.5"
-ndarray = "0.16.1"
+nalgebra = "0.34.0"
+
+[dependencies.fixed]
+features = ["num-traits"]
+version = "1.29.0"
