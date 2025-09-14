@@ -342,7 +342,7 @@ fn test_area_circle_rectangle_2d() {
         "Rectangle [4,3] to [5,4], r=5, expected area 0"
     );
 }
-
+#[allow(dead_code)]
 /// Computes the overlap area between a circle centered at (0,0) and a triangle
 /// with vertices (0,0), (d, y1), and (d, y2).
 /// - `r`: Radius of the circle.
@@ -479,7 +479,7 @@ fn test_area_circle_triangle_old(){
     }
     return area
  */
-
+#[allow(dead_code)]
 fn area_circle_rectangle_old(r:Num,r_sq:Num,x1:Num,y1:Num,x2:Num,y2:Num)->Num {
     let area1=area_circle_triangle_old(r, r_sq, y1.wrapping_neg(), x1, x2);
     let area2=area_circle_triangle_old(r, r_sq, x2, y1, y2);

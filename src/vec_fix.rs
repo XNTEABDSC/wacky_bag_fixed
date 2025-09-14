@@ -1,7 +1,4 @@
-use std::array;
 
-use cordic::*;
-use nalgebra::Const;
 use crate::num::Num;
 //pub struct Vec2F(pub Num,pub Num);
 
