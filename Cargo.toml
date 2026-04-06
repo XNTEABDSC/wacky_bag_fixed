@@ -9,6 +9,7 @@ cordic = "0.1.5"
 wacky_bag = {path="../wacky_bag"}
 rand = "0.8.5"
 nalgebra = "0.34.0"
+num-traits = "0.2.19"
 
 [dependencies.fixed]
 features = ["num-traits"]

@@ -4,3 +4,4 @@ pub mod loop_wrap_angle;
 pub mod angle_sub;
 pub mod normal_pdf;
 pub mod normal_cdf;
+pub mod outer_product;

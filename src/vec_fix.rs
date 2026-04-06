@@ -5,6 +5,8 @@ use crate::num::Num;
 
 pub type VecFix<const DIM:usize>=nalgebra::SVector<Num,DIM>;
 
+pub type MatFix<const DIM:usize>=nalgebra::SMatrix<Num,DIM,DIM>;
+
 pub type VecFix2=VecFix<2>;
 
 // #[inline]
